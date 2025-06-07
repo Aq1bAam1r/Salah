@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salah Times App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #151515;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding-bottom: 100px;
+        }
+
+        /* Header Section */
+        .header {
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .location-time {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .location {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+
+        .current-time {
+            font-size: 14px;
+            color: #00bcd4;
+            font-weight: 500;
+        }
+
+        .date-section {
+            background: linear-gradient(135deg, rgba(0,188,212,0.1), rgba(0,188,212,0.05));
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .date-navigation {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .date-nav-btn {
+            background: transparent;
+            border: none;
+            color: #00bcd4;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .date-nav-btn:hover {
+            background: rgba(0,188,212,0.1);
+        }
+
+        .date-nav-btn i {
+            font-size: 16px;
+        }
+
+        .date-display {
+            flex: 1;
+            text-align: center;
+        }
+
+        .gregorian-date {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .hijri-date {
+            color: #00bcd4;
+            font-size: 14px;
+        }
+
+        .today-btn {
+            background: rgba(0, 188, 212, 0.1);
+            border: 1px solid rgba(0, 188, 212, 0.3);
+            color: #00bcd4;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 10px auto 0;
+            transition: all 0.3s ease;
+        }
+
+        .today-btn:hover {
+            background: rgba(0, 188, 212, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .today-btn i {
+            font-size: 14px;
+        }
+
+        /* Hide button when already on today's date */
+        .today-btn.hidden {
+            display: none;
+        }
+
+        /* Next Prayer Section - Enhanced */
+        .next-prayer {
+            background: linear-gradient(135deg, #00bcd4, #007b8a);
+            padding: 30px;
+            border-radius: 25px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 188, 212, 0.2);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: top;
+            opacity: 1;
+            transform: translateY(0);
+            height: 180px;
+        }
+
+        .next-prayer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.1) 0%, transparent 60%);
+            z-index: 1;
+        }
+
+        .next-prayer-info {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .next-prayer-icon {
+            position: relative;
+            z-index: 1;
+            margin-right: -15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .next-prayer-icon i {
+            font-size: 80px;
+            color: rgba(255, 255, 255, 0.25);
+            transform: translateX(10px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .next-prayer:hover .next-prayer-icon i {
+            transform: translateX(5px) scale(1.1);
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .next-prayer-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .next-prayer-name {
+            font-size: 38px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .countdown-timer {
+            font-size: 32px;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 2px;
+        }
+
+        /* Prayer-specific gradients - Enhanced */
+        .next-prayer.fajr {
+            background: linear-gradient(135deg, #1e2832, #364049);  /* Dawn blue */
+            box-shadow: 0 10px 30px rgba(30, 40, 50, 0.3);
+        }
+
+        .next-prayer.dhuhr {
+            background: linear-gradient(135deg, #4287f5, #2962ff);  /* Midday blue */
+            box-shadow: 0 10px 30px rgba(41, 98, 255, 0.3);
+        }
+
+        .next-prayer.asr {
+            background: linear-gradient(135deg, #ff9e40, #ff6e40);  /* Late afternoon orange */
+            box-shadow: 0 10px 30px rgba(255, 158, 64, 0.3);
+        }
+
+        .next-prayer.maghrib {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);  /* Sunset red */
+            box-shadow: 0 10px 30px rgba(255, 65, 108, 0.3);
+        }
+
+        .next-prayer.isha {
+            background: linear-gradient(135deg, #141e30, #243b55);  /* Night blue */
+            box-shadow: 0 10px 30px rgba(20, 30, 48, 0.3);
+        }
+
+        /* Add hover effects */
+        .next-prayer:hover {
+            transform: translateY(-5px);
+        }
+
+        .next-prayer.fajr:hover {
+            box-shadow: 0 15px 40px rgba(30, 40, 50, 0.4);
+        }
+
+        .next-prayer.dhuhr:hover {
+            box-shadow: 0 15px 40px rgba(41, 98, 255, 0.4);
+        }
+
+        .next-prayer.asr:hover {
+            box-shadow: 0 15px 40px rgba(255, 158, 64, 0.4);
+        }
+
+        .next-prayer.maghrib:hover {
+            box-shadow: 0 15px 40px rgba(255, 65, 108, 0.4);
+        }
+
+        .next-prayer.isha:hover {
+            box-shadow: 0 15px 40px rgba(20, 30, 48, 0.4);
+        }
+
+        /* Prayer Times Grid */
+        .prayer-times-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: auto auto auto;
+            gap: 15px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .prayer-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 188, 212, 0.1);
+        }
+
+        .prayer-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #00bcd4;
+            transform: translateY(-2px);
+        }
+
+        .prayer-card.active {
+            background: linear-gradient(135deg, rgba(0,188,212,0.2), rgba(0,188,212,0.1));
+            border-color: #00bcd4;
+        }
+
+        .prayer-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #00bcd4;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .prayer-time {
+            font-size: 24px;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Make Isha card span full width and match grid width */
+        #isha-card {
+            grid-column: 1 / -1;
+            width: 100%;
+        }
+
+        /* Ayah Section with increased spacing */
+        .ayah-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            margin-top: 40px; /* Added spacing from prayer times */
+        }
+
+        .ayah-section h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #00bcd4;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ayah-section h2 i {
+            font-size: 20px;
+        }
+
+        .ayah-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 30px 20px;
+            border-radius: 15px;
+            text-align: center;
+            animation: slideIn 1s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .arabic-text {
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+            font-size: 2rem;
+            line-height: 2;
+            margin-bottom: 25px;
+            direction: rtl;
+            color: #ffffff;
+        }
+
+        .english-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0 15px;
+            margin-bottom: 20px;
+        }
+
+        .ayah-card #ayahReference {
+            font-size: 0.9rem;
+            color: #00bcd4;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(21, 21, 21, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: #a0a0a0;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        .nav-item.active {
+            color: #00bcd4;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+                padding-bottom: 0;
+            }
+
+            .app-container {
+                padding: 0;
+                padding-bottom: 90px;
+            }
+
+            .prayer-times-grid {
+                gap: 12px;
+                margin: 0 0 30px 0;
+                padding: 0;
+                width: 100%;
+            }
+
+            .next-prayer {
+                margin: 0 0 30px 0;
+                border-radius: 15px;
+                width: 100%;
+                padding: 25px;
+            }
+
+            .next-prayer-icon {
+                width: 100px;
+                height: 100px;
+            }
+
+            .next-prayer-icon i {
+                font-size: 60px;
+            }
+
+            .next-prayer-name {
+                font-size: 32px;
+            }
+
+            .prayer-card {
+                padding: 15px;
+            }
+
+            .prayer-name {
+                font-size: 13px;
+            }
+
+            .prayer-time {
+                font-size: 22px;
+            }
+
+            /* Increase spacing before Ayah section on mobile */
+            .ayah-section {
+                margin: 50px 0 30px 0;
+                border-radius: 15px;
+                padding: 20px;
+            }
+
+            /* Ensure Isha card matches grid width on mobile */
+            #isha-card {
+                width: 100%;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="location-time">
+                <div class="location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>London, UK</span>
+                </div>
+                <div class="current-time">07:30 AM</div>
+            </div>
+            <div class="date-section">
+                <div class="date-navigation">
+                    <button id="prevDate" class="date-nav-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="date-display">
+                        <div class="gregorian-date">Monday, March 18, 2024</div>
+                        <div class="hijri-date">7 Ramadan 1445</div>
+                        <button id="todayBtn" class="today-btn">
+                            <i class="fas fa-calendar-day"></i>
+                            View Today
+                        </button>
+                    </div>
+                    <button id="nextDate" class="date-nav-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Next Prayer -->
+        <div class="next-prayer">
+            <div class="next-prayer-info">
+                <div class="next-prayer-label">Next Prayer</div>
+                <div id="next-prayer-name" class="next-prayer-name">Loading...</div>
+                <div id="countdown-timer" class="countdown-timer">--:--:--</div>
+            </div>
+            <div class="next-prayer-icon">
+                <i class="material-symbols-rounded">mosque</i>
+            </div>
+        </div>
+
+        <!-- Prayer Times Grid -->
+        <div class="prayer-times-grid">
+            <div class="prayer-card" id="fajr-card">
+                <div class="prayer-name">
+                    <i class="fas fa-sun"></i>
+                    <span>Fajr</span>
+                </div>
+                <div class="prayer-time" id="fajr-time">--:--</div>
+            </div>
+            <div class="prayer-card" id="dhuhr-card">
+                <div class="prayer-name">
+                    <i class="fas fa-sun"></i>
+                    <span>Dhuhr</span>
+                </div>
+                <div class="prayer-time" id="dhuhr-time">--:--</div>
+            </div>
+            <div class="prayer-card" id="asr-card">
+                <div class="prayer-name">
+                    <i class="fas fa-sun"></i>
+                    <span>Asr</span>
+                </div>
+                <div class="prayer-time" id="asr-time">--:--</div>
+            </div>
+            <div class="prayer-card" id="maghrib-card">
+                <div class="prayer-name">
+                    <i class="fas fa-moon"></i>
+                    <span>Maghrib</span>
+                </div>
+                <div class="prayer-time" id="maghrib-time">--:--</div>
+            </div>
+            <div class="prayer-card" id="isha-card">
+                <div class="prayer-name">
+                    <i class="fas fa-moon"></i>
+                    <span>Isha</span>
+                </div>
+                <div class="prayer-time" id="isha-time">--:--</div>
+            </div>
+        </div>
+
+        <!-- Ayah of the Day -->
+        <section class="ayah-section">
+            <h2>
+                <i class="fas fa-quran"></i>
+                Ayah of the Day
+            </h2>
+            <div class="ayah-card">
+                <p id="ayahText">Loading Ayah...</p>
+                <p id="ayahReference"></p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="salah.html" class="nav-item active">
+            <i class="fas fa-clock"></i>
+            <span>Times</span>
+        </a>
+        <a href="hadith.html" class="nav-item">
+            <i class="fas fa-book"></i>
+            <span>Hadith</span>
+        </a>
+        <a href="calendar.html" class="nav-item">
+            <i class="fas fa-calendar"></i>
+            <span>Calendar</span>
+        </a>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>

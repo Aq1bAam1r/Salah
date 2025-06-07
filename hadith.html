@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadith Collection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-content">
+                <div class="header-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="header-text">
+                    <h2>Hadith Collection</h2>
+                    <p class="subtitle">Daily wisdom from the Prophet ﷺ</p>
+                </div>
+            </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search hadith..." id="searchInput">
+            </div>
+        </div>
+
+        <!-- Categories Section -->
+        <div class="categories-section">
+            <h3>Categories</h3>
+            <div class="categories-grid">
+                <div class="category-card" data-category="faith">
+                    <i class="fas fa-heart"></i>
+                    <span>Faith</span>
+                </div>
+                <div class="category-card" data-category="manners">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <span>Manners</span>
+                </div>
+                <div class="category-card" data-category="worship">
+                    <i class="fas fa-mosque"></i>
+                    <span>Worship</span>
+                </div>
+                <div class="category-card" data-category="family">
+                    <i class="fas fa-users"></i>
+                    <span>Family</span>
+                </div>
+                <div class="category-card" data-category="social">
+                    <i class="fas fa-handshake"></i>
+                    <span>Social</span>
+                </div>
+                <div class="category-card" data-category="ethics">
+                    <i class="fas fa-star"></i>
+                    <span>Ethics</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Featured Hadith -->
+        <div class="featured-hadith">
+            <h3>Featured Hadith</h3>
+            <div id="hadith-content">
+                <p class="loading">Loading hadith...</p>
+            </div>
+        </div>
+
+        <!-- Recent Hadiths -->
+        <div class="recent-hadiths">
+            <h3>Recent Hadiths</h3>
+            <div class="recent-list" id="recentHadiths">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <button class="refresh-btn" onclick="fetchHadith()">
+            <i class="fas fa-sync-alt"></i>
+            New Hadith
+        </button>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="salah.html" class="nav-item">
+            <i class="fas fa-clock"></i>
+            <span>Times</span>
+        </a>
+        <a href="hadith.html" class="nav-item active">
+            <i class="fas fa-book"></i>
+            <span>Hadith</span>
+        </a>
+        <a href="calendar.html" class="nav-item">
+            <i class="fas fa-calendar"></i>
+            <span>Calendar</span>
+        </a>
+    </nav>
+
+    <script>
+        const hadiths = [
+            // Faith Category
+            {
+                text: "Actions are according to intentions, and everyone will get what was intended.",
+                narrator: "Umar bin Al-Khattab",
+                source: "Sahih Bukhari 1",
+                chapter: "Book of Revelation",
+                category: "faith"
+            },
+            {
+                text: "None of you truly believes until he loves for his brother what he loves for himself.",
+                narrator: "Anas bin Malik",
+                source: "Sahih Bukhari 13",
+                chapter: "Book of Faith",
+                category: "faith"
+            },
+            {
+                text: "The best of faith is patience and tolerance.",
+                narrator: "Abu Hurairah",
+                source: "Sunan At-Tirmidhi 1162",
+                chapter: "Book of Faith",
+                category: "faith"
+            },
+            {
+                text: "Faith has seventy-odd branches, and modesty is a branch of faith.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Bukhari 9",
+                chapter: "Book of Faith",
+                category: "faith"
+            },
+            {
+                text: "The most perfect believer in faith is the one with the best character.",
+                narrator: "Abu Hurairah",
+                source: "Sunan At-Tirmidhi 1162",
+                chapter: "Book of Faith",
+                category: "faith"
+            },
+            {
+                text: "Whoever believes in Allah and the Last Day, let them speak good or remain silent.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Bukhari 6475",
+                chapter: "Book of Softening the Heart",
+                category: "faith"
+            },
+            {
+                text: "The believer is not the one who eats his fill while his neighbor is hungry.",
+                narrator: "Abu Hurairah",
+                source: "Sunan At-Tirmidhi 2356",
+                chapter: "Book of Righteousness",
+                category: "faith"
+            },
+            {
+                text: "The best of people are those who are most beneficial to people.",
+                narrator: "Jabir bin Abdullah",
+                source: "Sunan At-Tirmidhi 2347",
+                chapter: "Book of Righteousness",
+                category: "faith"
+            },
+            {
+                text: "The believer's shade on the Day of Resurrection will be their charity.",
+                narrator: "Adiyy bin Hatim",
+                source: "Sunan At-Tirmidhi 1925",
+                chapter: "Book of Righteousness",
+                category: "faith"
+            },
+            {
+                text: "The believer is not the one who curses, abuses, or acts indecently.",
+                narrator: "Abdullah bin Mas'ud",
+                source: "Sunan At-Tirmidhi 1977",
+                chapter: "Book of Righteousness",
+                category: "faith"
+            },
+
+            // Worship Category
+            {
+                text: "The best among you is the one who learns the Quran and teaches it.",
+                narrator: "Uthman bin Affan",
+                source: "Sahih Bukhari 5027",
+                chapter: "Book of Virtues of the Quran",
+                category: "worship"
+            },
+            {
+                text: "The most beloved of deeds to Allah are those that are most consistent, even if they are small.",
+                narrator: "Aisha (RA)",
+                source: "Sahih Bukhari 6464",
+                chapter: "Book of Righteousness",
+                category: "worship"
+            },
+            {
+                text: "The first thing for which a person will be brought to account on the Day of Resurrection will be their prayer.",
+                narrator: "Abu Hurairah",
+                source: "Sunan An-Nasa'i 466",
+                chapter: "Book of Prayer",
+                category: "worship"
+            },
+            {
+                text: "The prayer in congregation is twenty-seven times superior to the prayer offered by a person alone.",
+                narrator: "Abdullah bin Umar",
+                source: "Sahih Bukhari 645",
+                chapter: "Book of Prayer",
+                category: "worship"
+            },
+            {
+                text: "The best prayer after the obligatory prayers is the night prayer.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Muslim 1163",
+                chapter: "Book of Prayer",
+                category: "worship"
+            },
+            {
+                text: "Whoever fasts during Ramadan out of sincere faith and hoping to attain Allah's rewards, then all their past sins will be forgiven.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Bukhari 38",
+                chapter: "Book of Fasting",
+                category: "worship"
+            },
+            {
+                text: "The Prophet's fasting was not limited to Ramadan. He would fast on Mondays and Thursdays.",
+                narrator: "Aisha (RA)",
+                source: "Sahih Muslim 1156",
+                chapter: "Book of Fasting",
+                category: "worship"
+            },
+            {
+                text: "The best charity is that given during Ramadan.",
+                narrator: "Ibn Abbas",
+                source: "Sunan At-Tirmidhi 663",
+                chapter: "Book of Zakat",
+                category: "worship"
+            },
+            {
+                text: "Whoever performs Hajj for Allah's pleasure and does not have sexual relations with their spouse, and does not do evil or sins, then they will return (after Hajj free from all sins) as if they were born anew.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Bukhari 1521",
+                chapter: "Book of Hajj",
+                category: "worship"
+            },
+            {
+                text: "The best of prayers is the prayer of the day of Arafah.",
+                narrator: "Aisha (RA)",
+                source: "Sunan At-Tirmidhi 3585",
+                chapter: "Book of Prayer",
+                category: "worship"
+            },
+
+            // Manners Category
+            {
+                text: "The strong person is not the one who can wrestle someone else down. The strong person is the one who can control himself when angry.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Bukhari 6114",
+                chapter: "Book of Good Manners",
+                category: "manners"
+            },
+            {
+                text: "The best of you are those who are best to their families.",
+                narrator: "Aisha (RA)",
+                source: "Sunan At-Tirmidhi 3895",
+                chapter: "Book of Righteousness",
+                category: "manners"
+            },
+            {
+                text: "Whoever believes in Allah and the Last Day should be good to their neighbor.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Bukhari 6019",
+                chapter: "Book of Good Manners",
+                category: "manners"
+            },
+            {
+                text: "The best of you are those who are best to their wives.",
+                narrator: "Aisha (RA)",
+                source: "Sunan At-Tirmidhi 1162",
+                chapter: "Book of Good Manners",
+                category: "manners"
+            },
+            {
+                text: "The most perfect believer in faith is the one with the best character.",
+                narrator: "Abu Hurairah",
+                source: "Sunan At-Tirmidhi 1162",
+                chapter: "Book of Good Manners",
+                category: "manners"
+            },
+            {
+                text: "A good word is charity.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Bukhari 2989",
+                chapter: "Book of Good Manners",
+                category: "manners"
+            },
+            {
+                text: "The best of people are those who are most beneficial to people.",
+                narrator: "Jabir bin Abdullah",
+                source: "Sunan At-Tirmidhi 2347",
+                chapter: "Book of Righteousness",
+                category: "manners"
+            },
+            {
+                text: "Whoever is not grateful to people is not grateful to Allah.",
+                narrator: "Abu Hurairah",
+                source: "Sunan At-Tirmidhi 1954",
+                chapter: "Book of Good Manners",
+                category: "manners"
+            },
+            {
+                text: "The best of you are those who are best to their parents.",
+                narrator: "Abdullah bin Amr",
+                source: "Sahih Bukhari 5971",
+                chapter: "Book of Good Manners",
+                category: "manners"
+            },
+            {
+                text: "The best of you are those who are best to their wives.",
+                narrator: "Aisha (RA)",
+                source: "Sunan At-Tirmidhi 1162",
+                chapter: "Book of Good Manners",
+                category: "manners"
+            },
+
+            // Family Category
+            {
+                text: "The best of you are those who are best to their families.",
+                narrator: "Aisha (RA)",
+                source: "Sunan At-Tirmidhi 3895",
+                chapter: "Book of Righteousness",
+                category: "family"
+            },
+            {
+                text: "The best of you are those who are best to their wives.",
+                narrator: "Aisha (RA)",
+                source: "Sunan At-Tirmidhi 1162",
+                chapter: "Book of Good Manners",
+                category: "family"
+            },
+            {
+                text: "The best of you are those who are best to their parents.",
+                narrator: "Abdullah bin Amr",
+                source: "Sahih Bukhari 5971",
+                chapter: "Book of Good Manners",
+                category: "family"
+            },
+            {
+                text: "Paradise lies under the feet of mothers.",
+                narrator: "Anas bin Malik",
+                source: "Sunan An-Nasa'i 3104",
+                chapter: "Book of Righteousness",
+                category: "family"
+            },
+            {
+                text: "The best of you are those who are best to their children.",
+                narrator: "Abu Hurairah",
+                source: "Sunan At-Tirmidhi 1954",
+                chapter: "Book of Good Manners",
+                category: "family"
+            },
+            {
+                text: "Whoever has three daughters and is patient with them, feeds them, clothes them, and gives them a good upbringing, they will be a shield for them from the Fire.",
+                narrator: "Abu Hurairah",
+                source: "Sunan At-Tirmidhi 1913",
+                chapter: "Book of Righteousness",
+                category: "family"
+            },
+            {
+                text: "The best of you are those who are best to their wives.",
+                narrator: "Aisha (RA)",
+                source: "Sunan At-Tirmidhi 1162",
+                chapter: "Book of Good Manners",
+                category: "family"
+            },
+            {
+                text: "The best of you are those who are best to their parents.",
+                narrator: "Abdullah bin Amr",
+                source: "Sahih Bukhari 5971",
+                chapter: "Book of Good Manners",
+                category: "family"
+            },
+            {
+                text: "The best of you are those who are best to their children.",
+                narrator: "Abu Hurairah",
+                source: "Sunan At-Tirmidhi 1954",
+                chapter: "Book of Good Manners",
+                category: "family"
+            },
+            {
+                text: "Whoever has three daughters and is patient with them, feeds them, clothes them, and gives them a good upbringing, they will be a shield for them from the Fire.",
+                narrator: "Abu Hurairah",
+                source: "Sunan At-Tirmidhi 1913",
+                chapter: "Book of Righteousness",
+                category: "family"
+            },
+
+            // Social Category
+            {
+                text: "The best of people are those who are most beneficial to people.",
+                narrator: "Jabir bin Abdullah",
+                source: "Sunan At-Tirmidhi 2347",
+                chapter: "Book of Righteousness",
+                category: "social"
+            },
+            {
+                text: "Whoever believes in Allah and the Last Day should be good to their neighbor.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Bukhari 6019",
+                chapter: "Book of Good Manners",
+                category: "social"
+            },
+            {
+                text: "The best of you are those who are best to their neighbors.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Bukhari 6019",
+                chapter: "Book of Good Manners",
+                category: "social"
+            },
+            {
+                text: "Whoever is not grateful to people is not grateful to Allah.",
+                narrator: "Abu Hurairah",
+                source: "Sunan At-Tirmidhi 1954",
+                chapter: "Book of Good Manners",
+                category: "social"
+            },
+            {
+                text: "The best of you are those who are most beneficial to people.",
+                narrator: "Jabir bin Abdullah",
+                source: "Sunan At-Tirmidhi 2347",
+                chapter: "Book of Righteousness",
+                category: "social"
+            },
+            {
+                text: "Whoever believes in Allah and the Last Day should be good to their neighbor.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Bukhari 6019",
+                chapter: "Book of Good Manners",
+                category: "social"
+            },
+            {
+                text: "The best of you are those who are best to their neighbors.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Bukhari 6019",
+                chapter: "Book of Good Manners",
+                category: "social"
+            },
+            {
+                text: "Whoever is not grateful to people is not grateful to Allah.",
+                narrator: "Abu Hurairah",
+                source: "Sunan At-Tirmidhi 1954",
+                chapter: "Book of Good Manners",
+                category: "social"
+            },
+            {
+                text: "The best of you are those who are most beneficial to people.",
+                narrator: "Jabir bin Abdullah",
+                source: "Sunan At-Tirmidhi 2347",
+                chapter: "Book of Righteousness",
+                category: "social"
+            },
+            {
+                text: "Whoever believes in Allah and the Last Day should be good to their neighbor.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Bukhari 6019",
+                chapter: "Book of Good Manners",
+                category: "social"
+            },
+
+            // Ethics Category
+            {
+                text: "The best of you are those who are best to their families.",
+                narrator: "Aisha (RA)",
+                source: "Sunan At-Tirmidhi 3895",
+                chapter: "Book of Righteousness",
+                category: "ethics"
+            },
+            {
+                text: "The best of you are those who are best to their wives.",
+                narrator: "Aisha (RA)",
+                source: "Sunan At-Tirmidhi 1162",
+                chapter: "Book of Good Manners",
+                category: "ethics"
+            },
+            {
+                text: "The best of you are those who are best to their parents.",
+                narrator: "Abdullah bin Amr",
+                source: "Sahih Bukhari 5971",
+                chapter: "Book of Good Manners",
+                category: "ethics"
+            },
+            {
+                text: "The best of you are those who are best to their children.",
+                narrator: "Abu Hurairah",
+                source: "Sunan At-Tirmidhi 1954",
+                chapter: "Book of Good Manners",
+                category: "ethics"
+            },
+            {
+                text: "The best of you are those who are best to their neighbors.",
+                narrator: "Abu Hurairah",
+                source: "Sahih Bukhari 6019",
+                chapter: "Book of Good Manners",
+                category: "ethics"
+            },
+            {
+                text: "The best of you are those who are most beneficial to people.",
+                narrator: "Jabir bin Abdullah",
+                source: "Sunan At-Tirmidhi 2347",
+                chapter: "Book of Righteousness",
+                category: "ethics"
+            },
+            {
+                text: "Whoever is not grateful to people is not grateful to Allah.",
+                narrator: "Abu Hurairah",
+                source: "Sunan At-Tirmidhi 1954",
+                chapter: "Book of Good Manners",
+                category: "ethics"
+            },
+            {
+                text: "The best of you are those who are best to their families.",
+                narrator: "Aisha (RA)",
+                source: "Sunan At-Tirmidhi 3895",
+                chapter: "Book of Righteousness",
+                category: "ethics"
+            },
+            {
+                text: "The best of you are those who are best to their wives.",
+                narrator: "Aisha (RA)",
+                source: "Sunan At-Tirmidhi 1162",
+                chapter: "Book of Good Manners",
+                category: "ethics"
+            },
+            {
+                text: "The best of you are those who are best to their parents.",
+                narrator: "Abdullah bin Amr",
+                source: "Sahih Bukhari 5971",
+                chapter: "Book of Good Manners",
+                category: "ethics"
+            }
+        ];
+
+        let recentHadiths = [];
+
+        function fetchHadith() {
+            const hadithContent = document.getElementById('hadith-content');
+            hadithContent.innerHTML = '<p class="loading">Loading hadith...</p>';
+
+            // Get random hadith
+            const randomIndex = Math.floor(Math.random() * hadiths.length);
+            const hadith = hadiths[randomIndex];
+
+            // Add to recent hadiths if not already present
+            if (!recentHadiths.includes(hadith)) {
+                recentHadiths.unshift(hadith);
+                if (recentHadiths.length > 3) recentHadiths.pop();
+                updateRecentHadiths();
+            }
+
+            // Add slight delay to show loading state
+            setTimeout(() => {
+                hadithContent.innerHTML = `
+                    <div class="hadith-card">
+                        <div class="hadith-category">${hadith.category}</div>
+                        <p class="hadith-text">${hadith.text}</p>
+                        <div class="hadith-details">
+                            <p class="hadith-narrator">Narrated by: ${hadith.narrator}</p>
+                            <p class="hadith-source">${hadith.source}, ${hadith.chapter}</p>
+                            <span class="hadith-grade">Sahih</span>
+                        </div>
+                    </div>
+                `;
+            }, 500);
+        }
+
+        function updateRecentHadiths() {
+            const recentList = document.getElementById('recentHadiths');
+            recentList.innerHTML = recentHadiths.map(hadith => `
+                <div class="recent-hadith-item">
+                    <div class="recent-hadith-category">${hadith.category}</div>
+                    <p class="recent-hadith-text">${hadith.text}</p>
+                    <div class="recent-hadith-meta">
+                        <span class="recent-hadith-narrator">${hadith.narrator}</span>
+                        <span class="recent-hadith-source">${hadith.source}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredHadiths = hadiths.filter(hadith => 
+                hadith.text.toLowerCase().includes(searchTerm) ||
+                hadith.narrator.toLowerCase().includes(searchTerm) ||
+                hadith.source.toLowerCase().includes(searchTerm)
+            );
+            
+            const hadithContent = document.getElementById('hadith-content');
+            if (filteredHadiths.length > 0) {
+                const hadith = filteredHadiths[0];
+                hadithContent.innerHTML = `
+                    <div class="hadith-card">
+                        <div class="hadith-category">${hadith.category}</div>
+                        <p class="hadith-text">${hadith.text}</p>
+                        <div class="hadith-details">
+                            <p class="hadith-narrator">Narrated by: ${hadith.narrator}</p>
+                            <p class="hadith-source">${hadith.source}, ${hadith.chapter}</p>
+                            <span class="hadith-grade">Sahih</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                hadithContent.innerHTML = '<p class="no-results">No hadiths found matching your search.</p>';
+            }
+        });
+
+        // Category filtering
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const category = this.dataset.category;
+                const filteredHadiths = hadiths.filter(hadith => hadith.category === category);
+                if (filteredHadiths.length > 0) {
+                    const hadith = filteredHadiths[Math.floor(Math.random() * filteredHadiths.length)];
+                    const hadithContent = document.getElementById('hadith-content');
+                    hadithContent.innerHTML = `
+                        <div class="hadith-card">
+                            <div class="hadith-category">${hadith.category}</div>
+                            <p class="hadith-text">${hadith.text}</p>
+                            <div class="hadith-details">
+                                <p class="hadith-narrator">Narrated by: ${hadith.narrator}</p>
+                                <p class="hadith-source">${hadith.source}, ${hadith.chapter}</p>
+                                <span class="hadith-grade">Sahih</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        });
+
+        // Initial load
+        fetchHadith();
+    </script>
+</body>
+</html> 
